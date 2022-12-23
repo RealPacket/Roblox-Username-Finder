@@ -37,10 +37,10 @@ except ImportError:
 
 # Set the URL and the parameters
 url = "https://auth.roblox.com/v1/usernames/validate"
-params = {"context": "Signup", "Birthday": "1931-01-01T06:00:00.000Z"}
+params = {"context": "Signup", "Birthday": "1931-01-01T06:00:00.000Z"} # RIP: You used to be able to use fake birthday(s).
 
 # Set the delay between requests (in seconds)
-delay = 6
+delay = 5 # To not overwhelm the server, we need delay.
 
 while not K.is_pressed("Q"):
     # Generate a random 5-letter string
@@ -57,7 +57,7 @@ while not K.is_pressed("Q"):
 
     # Print the message object
     print(f"[{username}] {data['message']}")
-    # {'code': 1, 'message': 'Username is already in use'}
+    # Requests look something like this: {'code': 1, 'message': 'Username is already in use'}
 
     # Delay the next request
     time.sleep(delay)
