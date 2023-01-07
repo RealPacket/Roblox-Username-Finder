@@ -3,7 +3,6 @@ import sys
 import time as T
 import string
 import random
-import time
 from json import loads as Decode
 
 # Set the URL and the parameters
@@ -60,4 +59,4 @@ while not K.is_pressed("Q"):
     # Requests look something like this: {'code': 1, 'message': 'Username is already in use'}
 
     # Delay the next request
-    time.sleep(delay)
+    T.sleep(delay)
