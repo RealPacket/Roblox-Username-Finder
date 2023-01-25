@@ -6,11 +6,11 @@ run
 ```batch
 pip install requests
 ```
-if you've not installed requests,
+if you've not installed `requests`,
 and 
 ```batch
 pip install keyboard
 ```
+if you've not installed `keyboard`,
 otherwise if you have them just run the script.
-if you've not installed keyboard
 and just wait.
