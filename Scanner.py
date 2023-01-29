@@ -1,62 +1,59 @@
-import subprocess
-import sys
-import time as T
-import string
+import concurrent.futures
+import json
 import random
-from json import loads as Decode
+import string
+from typing import Dict
 
-# Set the URL and the parameters
-url = "https://auth.roblox.com/v1/usernames/validate"
-
-try:
-    import requests as R
-except ImportError:
-    option = input("Should we install the requests library for you? (Y/N)").lower()
-    if option == "y" or option == "yes":
-        subprocess.run(["pip", "install", "requests"])
-        T.sleep(4)
-        import requests as R
-    else:
-        print("You entered No, please install the requests library to continue. To install the requests library, "
-              "run `pip install requests`.")
-        sys.exit(1)
-try:
-    import keyboard as K
-except ImportError:
-    option = input("Should we install the keyboard library for you? (Y/N)").lower()
-    if option == "y" or option == "yes":
-        subprocess.run(["pip", "install", "keyboard"])
-        import keyboard as K
-    else:
-        print(
-            f"You entered {option}, please install the keyboard library to continue. To install the keyboard library, "
-            "run `pip install keyboard`.")
-        sys.exit(1)
+import requests
 
 
 # Set the URL and the parameters
 url = "https://auth.roblox.com/v1/usernames/validate"
-params = {"context": "Signup", "Birthday": "1931-01-01T06:00:00.000Z"} # RIP: You used to be able to use fake birthday(s).
+# fake birthday
+params = {"context": "Signup", "Birthday": "1931-01-01T06:00:00.000Z"}
 
 # Set the delay between requests (in seconds)
-delay = 5 # To not overwhelm the server, we need delay.
+# delay = 1 or float(sys.argv[0])
+RetryTimes: int = 0
 
-while not K.is_pressed("Q"):
-    # Generate a random 5-letter string
-    username = "".join(random.choices(string.ascii_letters, k=5))
 
-    # Update the parameters with the random username
+def generate_random_username(length: int = 5) -> str:
+    """
+    This function generates a random string of the specified length.
+    """
+    return "".join(random.choices(string.ascii_letters, k=length))
+
+
+def check_username_availability(username: str) -> Dict[str, str]:
+    """
+    This function checks the availability of a given name on the specified URL.
+    """
+    # Update the parameters with the random name
     params["username"] = username
-
     # Make the request
-    response: R.Response = R.get(url, params=params)
-
+    response = requests.get(url, params=params)
     # Decode the response text
-    data = Decode(response.text)
+    rData = json.loads(response.text)
+    return rData
 
-    # Print the message object
-    print(f"[{username}] {data['message']}")
-    # Requests look something like this: {'code': 1, 'message': 'Username is already in use'}
 
-    # Delay the next request
-    T.sleep(delay)
+# Use a ThreadPoolExecutor to run the check_username_availability function concurrently
+with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
+    future_to_name = {
+        executor.submit(check_username_availability,
+                        generate_random_username()): generate_random_username() for i in range(1000)}
+    for future in concurrent.futures.as_completed(future_to_name):
+        name = future_to_name[future]
+        try:
+            data = future.result()
+            if not data['message'] or not data['code']:
+                print(f"[{name}] No message or code. can't tell if claimed or not.")
+            if data["code"] != 0:
+                print(f"[{name}] {data['message']}")
+            else:
+                print(f"{name} isn't claimed!")
+        except (requests.RequestException, requests.ConnectionError,
+                ConnectionResetError, ConnectionError,
+                ConnectionRefusedError, ConnectionAbortedError):
+            print(f"[{RetryTimes}] Retrying...")
+            continue
