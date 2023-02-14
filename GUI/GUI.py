@@ -3,6 +3,7 @@
 
 The GUI file is for the GUI, like the name implies, it's the main file for this app.
 Why do I even need to document this?
+Also, this is a GUI preview
 """
 
 from os import chmod
