@@ -1,6 +1,6 @@
 # Roblox Username Finder/Sniper
 Script made with python,
-GUI version coming using some UI library soon
+GUI version coming using some UI library soon (working on Sniper tab)
 # How to use
 run
 ```batch
