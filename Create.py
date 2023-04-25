@@ -17,7 +17,9 @@ class Birthday:
         if Year > 2023:
             Logger.err("Invalid Birthday!")
             raise ValueError
-        self.Month = ""
+        self.Month = Month
+        self.Day = day
+        self.Year = Year
 
 
 async def set_random_birthday() -> bool:
