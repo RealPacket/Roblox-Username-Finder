@@ -9,12 +9,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 import betterLogging as Logger
 import asyncio
 
-if __name__ == '__main__':
-    pass
-
-
-# TODO: Start using this class for storing account birthdays
-
 
 class Birthday:
     """A birthday"""
