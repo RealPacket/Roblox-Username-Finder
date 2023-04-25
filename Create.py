@@ -74,7 +74,7 @@ async def set_gender(Gender: str = "M"):
 def wait(secs: int):
     task.sleep(secs)
 
-
+# TODO: Remove below, and find a way to still not have chrome driver error.
 global task  # NOQA
 task.wait = wait
 
